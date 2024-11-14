@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { UserCircle, LogOut, User } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Avvvatars from "avvvatars-react";
 import { SearchBar } from "./search-box";
 import { toast } from "sonner";
@@ -36,6 +36,7 @@ const Navbar = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const router = useRouter();
   const { data: session, status } = useSession();
+  const pathname = usePathname();
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
@@ -48,6 +49,10 @@ const Navbar = () => {
 
     setLastScrollY(currentScrollY);
   };
+
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, [pathname]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
