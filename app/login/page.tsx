@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,22 +8,7 @@ import { toast } from "sonner";
 import { signIn, useSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 
-function LoginLoader() {
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-[400px]">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Loading...</CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-center p-6">
-          <Loader2 className="h-6 w-6 animate-spin" />
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function LoginContent() {
+export default function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const router = useRouter();
@@ -82,12 +67,14 @@ function LoginContent() {
     };
 
     handleAuth();
-  }, [session, searchParams, status, router, isAuthenticating]);
+  }, [session, searchParams, status]);
 
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_TMDB_URL}/authentication/token/new?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_TMDB_URL}/authentication/token/new?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -110,34 +97,29 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-[400px]">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Login with TMDB</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button onClick={handleLogin} className="w-full" disabled={isLoading || isAuthenticating}>
-            {isLoading || isAuthenticating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {isAuthenticating ? "Authenticating..." : "Please wait..."}
-              </>
-            ) : (
-              "Authenticate with TMDB"
-            )}
-          </Button>
-          <p className="text-sm text-muted-foreground text-center">You will be redirected to TMDB to complete the login process</p>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-// Main component with Suspense boundary
-export default function LoginPage() {
-  return (
-    <Suspense fallback={<LoginLoader />}>
-      <LoginContent />
-    </Suspense>
+    <Card className="w-full max-w-[400px]">
+      <CardHeader>
+        <CardTitle className="text-2xl text-center">Login with TMDB</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Button
+          onClick={handleLogin}
+          className="w-full"
+          disabled={isLoading || isAuthenticating}
+        >
+          {isLoading || isAuthenticating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {isAuthenticating ? "Authenticating..." : "Please wait..."}
+            </>
+          ) : (
+            "Authenticate with TMDB"
+          )}
+        </Button>
+        <p className="text-sm text-muted-foreground text-center">
+          You will be redirected to TMDB to complete the login process
+        </p>
+      </CardContent>
+    </Card>
   );
 }
