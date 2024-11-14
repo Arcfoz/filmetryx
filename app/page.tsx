@@ -4,7 +4,7 @@ import DevelopmentAlert from "@/components/DevelopmentAlert";
 import Footer from "@/components/layout/Footer";
 import { Hero } from "@/components/layout/Hero";
 import { MovieGrid } from "@/components/layout/MovieGrid";
-import { fetchPopular, fetchTopRated, fetchTvPopular, fetchTvTopRated } from "@/lib/tmdb";
+import { fetchPopular, fetchTvTopRated } from "@/lib/tmdb";
 import { ArrowRight, Github } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -23,8 +23,6 @@ export default function Home() {
       <main className="container mx-auto">
         <Hero />
         <MovieGrid fetchMovies={fetchPopular} media_type="movie" title="Movie Popular" limit={20} maxItems={20} onLoaded={handleLoaded} />
-        <MovieGrid fetchMovies={fetchTopRated} media_type="movie" title="Movie Top Rated" limit={20} maxItems={20} />
-        <MovieGrid fetchMovies={fetchTvPopular} media_type="tv" title="Tv Popular" limit={20} maxItems={20} />
         <MovieGrid fetchMovies={fetchTvTopRated} media_type="tv" title="Tv Top Rated" limit={20} maxItems={20} />
 
         {!isLoading && (
