@@ -9,10 +9,9 @@ interface MovieGridProps {
   media_type: string;
   limit?: number;
   maxItems?: number;
-  onLoaded?: () => void;
 }
 
-export function MovieGrid({ fetchMovies, title, media_type, limit = 6, maxItems = 30, onLoaded }: MovieGridProps) {
+export function MovieGrid({ fetchMovies, title, media_type, limit = 6, maxItems = 30 }: MovieGridProps) {
   const [allMovies, setAllMovies] = useState<Movies[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +28,6 @@ export function MovieGrid({ fetchMovies, title, media_type, limit = 6, maxItems 
         setDisplayedMovies(initialDisplay);
         setTotalLoaded(initialDisplay.length);
         setIsLoading(false);
-        if (onLoaded) onLoaded();
       } catch (err) {
         console.error(err);
         setError("Failed to fetch movies");
@@ -38,7 +36,7 @@ export function MovieGrid({ fetchMovies, title, media_type, limit = 6, maxItems 
     };
 
     fetchAllData();
-  }, [fetchMovies, limit, maxItems, onLoaded]);
+  }, [fetchMovies, limit, maxItems]);
 
   const handleLoadMore = () => {
     const currentTotal = totalLoaded;
