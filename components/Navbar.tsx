@@ -15,7 +15,7 @@ function FilmetryxLogo() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" width="120" viewBox="0 0 130.51 24.238">
       <text xmlSpace="preserve" x="-26.765" y="348.928" fill="#ffffff" strokeWidth="2.072" fontFamily="Satoshi" fontSize="24.86" fontWeight="900" transform="translate(45.505 -330.66)">
-        <tspan x="-26.765" y="348.928" fontFamily="Manrope" fontWeight="bold">
+        <tspan x="-26.765" y="348.928" fontWeight="bold" className="font-custom">
           Filmetryx
         </tspan>
       </text>

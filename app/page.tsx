@@ -1,4 +1,3 @@
-import DevelopmentAlert from "@/components/DevelopmentAlert";
 import Footer from "@/components/layout/Footer";
 import { Hero } from "@/components/layout/Hero";
 import { MovieGrid } from "@/components/layout/MovieGrid";
@@ -9,7 +8,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#191A39] from-30%">
-      <DevelopmentAlert />
       <main className="container mx-auto">
         <Hero />
         <MovieGrid fetchMovies={fetchPopular} media_type="movie" title="Movie Popular" limit={20} maxItems={20} />
