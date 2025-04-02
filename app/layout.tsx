@@ -34,6 +34,7 @@ export default function RootLayout({
   
   return (
     <html lang="en">
+      <script defer src="https://umami-arcfoz.vercel.app/script.js" data-website-id="acfcd09a-b4a3-4818-96dd-902ea2a6c8db"></script>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
         <NextAuthProvider>
           <Navbar />
