@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import { NextAuthProvider } from "@/providers/NextAuthProvider";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,12 +31,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  
   return (
     <html lang="en">
-      <script defer src="https://umami-arcfoz.vercel.app/script.js" data-website-id="acfcd09a-b4a3-4818-96dd-902ea2a6c8db"></script>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
+        <Script async src="https://umami-arcfoz.vercel.app/script.js" data-website-id="14673157-be51-4ca8-ab54-eb92d8252d1b" />
         <NextAuthProvider>
           <Navbar />
           <main>{children}</main>
