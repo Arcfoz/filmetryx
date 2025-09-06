@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { UserCircle, LogOut, User } from "lucide-react";
@@ -38,7 +38,7 @@ const Navbar = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
 
     if (currentScrollY > lastScrollY && currentScrollY > 100) {
@@ -48,7 +48,7 @@ const Navbar = () => {
     }
 
     setLastScrollY(currentScrollY);
-  };
+  }, [lastScrollY]);
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -59,7 +59,7 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [lastScrollY]);
+  }, [handleScroll]);
 
   const handleLogout = async () => {
     await signOut({ redirect: false });

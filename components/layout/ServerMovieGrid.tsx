@@ -40,11 +40,6 @@ export function ServerMovieGrid({
         />
       </div>
       
-      {/* Load More Button placed outside the grid */}
-      <LoadMoreButtonControls
-        gridType={gridType}
-        maxPages={5}
-      />
     </section>
   );
 }

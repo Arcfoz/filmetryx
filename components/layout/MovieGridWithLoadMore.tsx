@@ -272,7 +272,7 @@ export function MovieGridWithLoadMore({
         variants={accessibleVariants.container}
       >
         {/* All movies including loaded ones */}
-        {allMovies.map((movie, index) => (
+        {allMovies.map((movie) => (
           <motion.div
             key={movie.id}
             variants={newlyLoadedIds.has(movie.id) && !reduceMotion ? accessibleVariants.movieCard : {}}

@@ -67,7 +67,7 @@ export default function LoginContent() {
     };
 
     handleAuth();
-  }, [session, searchParams, status]);
+  }, [session, searchParams, status, isAuthenticating, router]);
 
   const handleLogin = async () => {
     try {
@@ -143,7 +143,7 @@ export default function LoginContent() {
 
         <div className="text-center">
           <p className="text-xs sm:text-sm text-muted-foreground/80 leading-relaxed">
-            You'll be securely redirected to The Movie Database
+            You&apos;ll be securely redirected to The Movie Database
           </p>
         </div>
       </CardContent>

@@ -27,7 +27,7 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ featured }: HeroCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
-  const [Autoplay, setAutoplay] = useState<any>(null);
+  const [Autoplay, setAutoplay] = useState<typeof import("embla-carousel-autoplay").default | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(api);
   const { ref: parallaxRef, y: parallaxY } = useParallax(50);

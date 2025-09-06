@@ -1,8 +1,4 @@
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import Image from "next/image";
 import React from "react";
-import Link from "next/link";
-import { CircularRating } from "../CircularRating";
 import { HeroCarousel } from "./HeroCarousel";
 
 interface FeaturedItem {
