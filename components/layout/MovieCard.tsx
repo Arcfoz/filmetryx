@@ -49,7 +49,7 @@ export function MovieCard({ movie, media_type, children, showText }: MovieCardPr
             <div
               className="relative w-full pb-[150%] overflow-hidden rounded-xl bg-mediaCard-hoverBackground bg-cover bg-center transition-[border-radius] duration-300 group-hover:rounded-lg"
               style={{
-                backgroundImage: movie.poster_path ? `url(https://image.tmdb.org/t/p/original${movie.poster_path})` : undefined,
+                backgroundImage: movie.poster_path ? `url(https://image.tmdb.org/t/p/w342${movie.poster_path})` : undefined,
               }}
             >
               {/* Media type icon badge */}

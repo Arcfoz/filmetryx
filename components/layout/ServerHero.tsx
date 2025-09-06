@@ -1,5 +1,5 @@
 import React from "react";
-import { HeroCarousel } from "./HeroCarousel";
+import { Hero } from "./Hero";
 
 interface FeaturedItem {
   id: number;
@@ -39,22 +39,5 @@ async function fetchFeaturedContent(): Promise<FeaturedItem[]> {
 
 export async function ServerHero() {
   const featured = await fetchFeaturedContent();
-
-  if (featured.length === 0) {
-    return (
-      <section className="relative left-1/2 transform -translate-x-1/2 overflow-hidden w-screen -mx-2">
-        <div className="w-[calc(100vw)] overflow-hidden h-[500px] bg-gradient-to-b from-[#191A39] flex items-center justify-center">
-          <p className="text-white text-xl">Unable to load featured content</p>
-        </div>
-      </section>
-    );
-  }
-
-  return (
-    <section className="relative left-1/2 transform -translate-x-1/2 overflow-hidden w-screen -mx-2">
-      <div className="w-[calc(100vw)] overflow-hidden">
-        <HeroCarousel featured={featured} />
-      </div>
-    </section>
-  );
+  return <Hero initialFeatured={featured} />;
 }

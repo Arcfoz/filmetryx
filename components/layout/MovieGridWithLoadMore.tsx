@@ -15,6 +15,7 @@ interface MovieGridWithLoadMoreProps {
   media_type: string;
   gridType: MovieGridType;
   maxPages?: number;
+  isFirstSection?: boolean;
 }
 
 // Animation variants
@@ -163,7 +164,8 @@ export function MovieGridWithLoadMore({
   initialMovies,
   media_type,
   gridType,
-  maxPages = 5
+  maxPages = 5,
+  isFirstSection = false
 }: MovieGridWithLoadMoreProps) {
   const [allMovies, setAllMovies] = useState<Movies[]>(initialMovies);
   const [currentPage, setCurrentPage] = useState(1);
@@ -242,28 +244,30 @@ export function MovieGridWithLoadMore({
   };
 
   return (
-    <motion.section 
-      className="mb-8"
-      initial={reduceMotion ? false : "hidden"}
-      animate={reduceMotion ? {} : "show"}
-      variants={accessibleVariants.container}
-    >
+    <section className="mb-8">
       <div className="sticky top-20 z-10 mb-8" ref={titleRef}>
         <div className="w-fit py-2 px-4 backdrop-blur-md bg-[#191A39]/95 rounded-full border border-white/10 shadow-lg transition-all duration-300">
-          <motion.h3 
-            className="text-xl font-semibold relative text-white"
-            initial={reduceMotion ? false : { opacity: 0, x: -20 }}
-            animate={reduceMotion ? {} : (isTitleInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 })}
-            transition={reduceMotion ? {} : { duration: 0.6, ease: "easeOut" }}
-          >
-            {title}
-            <motion.div
-              className="absolute bottom-0 left-0 h-0.5 bg-[#82C4FF]"
-              initial={{ width: 0 }}
-              animate={reduceMotion ? {} : (isTitleInView ? { width: "100%" } : { width: 0 })}
-              transition={reduceMotion ? {} : { duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            />
-          </motion.h3>
+          {isFirstSection ? (
+            <h3 className="text-xl font-semibold relative text-white">
+              {title}
+              <div className="absolute bottom-0 left-0 h-0.5 bg-[#82C4FF] w-full" />
+            </h3>
+          ) : (
+            <motion.h3 
+              className="text-xl font-semibold relative text-white"
+              initial={reduceMotion ? false : { opacity: 0, x: -20 }}
+              animate={reduceMotion ? {} : (isTitleInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 })}
+              transition={reduceMotion ? {} : { duration: 0.6, ease: "easeOut" }}
+            >
+              {title}
+              <motion.div
+                className="absolute bottom-0 left-0 h-0.5 bg-[#82C4FF]"
+                initial={{ width: 0 }}
+                animate={reduceMotion ? {} : (isTitleInView ? { width: "100%" } : { width: 0 })}
+                transition={reduceMotion ? {} : { duration: 0.8, delay: 0.3, ease: "easeOut" }}
+              />
+            </motion.h3>
+          )}
         </div>
       </div>
       
@@ -384,6 +388,6 @@ export function MovieGridWithLoadMore({
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.section>
+    </section>
   );
 }

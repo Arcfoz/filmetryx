@@ -6,20 +6,17 @@ import { ArrowRight, Github } from "lucide-react";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
-import { PageTransition } from "@/components/ui/PageTransition";
 
 export default async function Home() {
   // Fetch all data in parallel on the server
   const { popularMovies, topRatedMovies, popularTv, topRatedTv } = await fetchHomepageData();
 
   return (
-    <PageTransition className="min-h-screen bg-gradient-to-b from-[#191A39] from-30%">
+    <div className="min-h-screen bg-gradient-to-b from-[#191A39] from-30%">
       <main className="container mx-auto">
         <ServerHero />
         
-        <ScrollReveal direction="up" delay={0.2}>
-          <MovieGridWithLoadMore initialMovies={popularMovies} media_type="movie" gridType="movie_popular" title="Movie Popular" />
-        </ScrollReveal>
+        <MovieGridWithLoadMore initialMovies={popularMovies} media_type="movie" gridType="movie_popular" title="Movie Popular" isFirstSection={true} />
         
         <ScrollReveal direction="up" delay={0.1}>
           <MovieGridWithLoadMore initialMovies={topRatedMovies} media_type="movie" gridType="movie_top_rated" title="Movie Top Rated" />
@@ -68,6 +65,6 @@ export default async function Home() {
         </ScrollReveal>
       </main>
       <Footer />
-    </PageTransition>
+    </div>
   );
 }

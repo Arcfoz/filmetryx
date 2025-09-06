@@ -215,7 +215,7 @@ export async function fetchTvTopRated(page: number = 1) {
 // Enhanced pagination functions for load more functionality
 export type MovieGridType = "movie_popular" | "movie_top_rated" | "tv_popular" | "tv_top_rated";
 
-export async function fetchMoviesByType(type: MovieGridType, page: number): Promise<Movies[]> {
+export async function fetchMoviesByType(type: MovieGridType, page: number): Promise<Movie[]> {
   const endpointMap = {
     movie_popular: "movie/popular",
     movie_top_rated: "movie/top_rated", 

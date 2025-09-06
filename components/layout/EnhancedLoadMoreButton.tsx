@@ -3,10 +3,13 @@
 import React, { useState, useTransition } from "react";
 import { Movies } from "@/types/movie";
 import { MovieCard } from "./MovieCard";
+import { MovieGridType } from "@/lib/tmdb";
 
 interface EnhancedLoadMoreButtonProps {
   media_type: string;
   initialMovies: Movies[];
+  gridType?: MovieGridType;
+  maxPages?: number;
 }
 
 export function EnhancedLoadMoreButton({ 

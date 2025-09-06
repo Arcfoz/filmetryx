@@ -4,7 +4,7 @@ import { useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
 import { useRef, RefObject } from "react";
 
 interface ScrollAnimationOptions {
-  offset?: [string, string];
+  offset?: ["start end", "end start"] | ["start start", "end end"] | ["start center", "end center"];
   smooth?: boolean;
 }
 
@@ -23,7 +23,7 @@ export function useScrollAnimation(options: ScrollAnimationOptions = {}): Scroll
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: offset as [string, string]
+    offset: offset
   });
 
   // Create smooth springs for smoother animations
