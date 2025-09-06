@@ -16,6 +16,11 @@ import { useSession } from "next-auth/react";
 import Footer from "@/components/layout/Footer";
 import { CircularRating } from "@/components/CircularRating";
 import { GlobeIcon, HeartIcon, HeartOffIcon, User } from "lucide-react";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { AnimatedSection, StaggeredGrid, FadeInSection } from "@/components/ui/AnimatedSection";
+import { motion } from "framer-motion";
+import { useParallax } from "@/hooks/useScrollAnimation";
+import { MovieDetailSkeleton } from "@/components/ui/MovieDetailSkeleton";
 
 export interface SelectedVideo {
   videoId: string;
@@ -33,6 +38,7 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<SelectedVideo | null>(null);
   const { data: session } = useSession();
+  const { ref: parallaxRef, y: parallaxY } = useParallax(100);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,7 +80,7 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
   };
 
   if (isLoading) {
-    return <div className=" flex items-center justify-center min-h-screen">Loading...</div>;
+    return <MovieDetailSkeleton />;
   }
 
   if (!movie) {
@@ -146,11 +152,11 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
       </div>
       {/* Hero Section with Backdrop */}
       <div className="mx-auto px-4 py-8">
-        <div className="relative w-full h-[500px] rounded-t-xl overflow-hidden">
-          <div className="absolute inset-0">
+        <div className="relative w-full h-[500px] rounded-t-xl overflow-hidden" ref={parallaxRef}>
+          <motion.div className="absolute inset-0" style={{ y: parallaxY }}>
             {movie.backdrop_path ? <Image src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`} alt="" fill className="object-cover" priority /> : <div className="h-full w-full bg-black" />}
             <div className="absolute inset-0 bg-gradient-to-t from-black/100 via-black/40 to-transparent " />
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -158,152 +164,172 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
       <div className="mx-auto px-4 -mt-72 relative">
         <div className="grid md:grid-cols-12 gap-8 max-w-[1400px] mx-auto ">
           {/* Poster & Action Buttons */}
-          <div className="md:col-span-3">
+          <ScrollReveal direction="left" delay={0.2} className="md:col-span-3">
             <div className="space-y-4 w-full max-w-[300px] mx-auto">
-              <div className="aspect-[2/3] relative w-full">
-                <Image src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title ?? ""} fill className="rounded-lg shadow-xl object-cover" priority />
-                <div className="absolute bottom-2 right-2 z-10">
-                  <CircularRating rating={movie.vote_average || 0} size={48} />
+              <ScrollReveal direction="scale" delay={0.4}>
+                <div className="aspect-[2/3] relative w-full">
+                  <Image src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title ?? ""} fill className="rounded-lg shadow-xl object-cover" priority />
+                  <div className="absolute bottom-2 right-2 z-10">
+                    <CircularRating rating={movie.vote_average || 0} size={48} />
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
               {/* Action Buttons */}
-              <div className="flex flex-col w-full gap-3">
-                {movie.homepage && (
-                  <Link href={movie.homepage} target="_blank" className="w-full">
-                    <Button variant={"outline"} className="flex items-center justify-center w-full py-2">
-                      <GlobeIcon className="w-5 h-5 mr-2" />
-                      Website
-                    </Button>
-                  </Link>
-                )}
-                <Button variant={isFavorite ? "outline" : "default"} onClick={() => handleFavoriteClick(movie.id, isFavorite)} className="flex items-center justify-center w-full py-2">
-                  {isFavorite ? <HeartOffIcon className="w-5 h-5 mr-2" /> : <HeartIcon className="w-5 h-5 mr-2" />}
-                  {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-                </Button>
-              </div>
+              <AnimatedSection animation="slide-up" stagger staggerDelay={0.1} delay={0.6}>
+                <div className="flex flex-col w-full gap-3">
+                  {movie.homepage && (
+                    <Link href={movie.homepage} target="_blank" className="w-full">
+                      <Button variant={"outline"} className="flex items-center justify-center w-full py-2">
+                        <GlobeIcon className="w-5 h-5 mr-2" />
+                        Website
+                      </Button>
+                    </Link>
+                  )}
+                  <Button variant={isFavorite ? "outline" : "default"} onClick={() => handleFavoriteClick(movie.id, isFavorite)} className="flex items-center justify-center w-full py-2">
+                    {isFavorite ? <HeartOffIcon className="w-5 h-5 mr-2" /> : <HeartIcon className="w-5 h-5 mr-2" />}
+                    {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                  </Button>
+                </div>
+              </AnimatedSection>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Details */}
-          <div className="md:col-span-9 text-white">
+          <ScrollReveal direction="right" delay={0.3} className="md:col-span-9 text-white">
             <div className="max-w-5xl ">
-              <h1 className="text-3xl sm:text-4xl font-bold mb-2">
-                {movie.title} ({releaseYear})
-              </h1>
+              <ScrollReveal direction="fade" delay={0.5}>
+                <h1 className="text-3xl sm:text-4xl font-bold mb-2">
+                  {movie.title} ({releaseYear})
+                </h1>
+              </ScrollReveal>
 
               {/* Meta Info */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-2 text-sm">
-                {/* Genres */}
-                <div className="flex flex-wrap gap-2 mb-4 justify-center items-center">
-                  {movie.genres && movie.genres.length > 0 && (
-                    <>
-                      {movie.genres.map((genre) => (
-                        <span key={genre.id} className="px-3 py-1 bg-white/20 rounded-full text-sm">
-                          {genre.name}
-                        </span>
-                      ))}
-                      <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
-                    </>
-                  )}
-                  <div>{formattedDate}</div>
+              <ScrollReveal direction="fade" delay={0.7}>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-2 text-sm">
+                  {/* Genres */}
+                  <div className="flex flex-wrap gap-2 mb-4 justify-center items-center">
+                    {movie.genres && movie.genres.length > 0 && (
+                      <>
+                        {movie.genres.map((genre) => (
+                          <span key={genre.id} className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                            {genre.name}
+                          </span>
+                        ))}
+                        <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                      </>
+                    )}
+                    <div>{formattedDate}</div>
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
 
-              {movie.tagline && <p className="text-xl text-gray-200 italic mb-4">{movie.tagline}</p>}
+              {movie.tagline && (
+                <ScrollReveal direction="fade" delay={0.9}>
+                  <p className="text-xl text-gray-200 italic mb-4">{movie.tagline}</p>
+                </ScrollReveal>
+              )}
 
               {/* Overview */}
-              <div className="mb-6">
-                <h2 className="text-xl font-bold mb-2">Overview</h2>
-                <p className="text-gray-200 leading-relaxed">{movie.overview}</p>
-              </div>
+              <ScrollReveal direction="up" delay={1.0}>
+                <div className="mb-6">
+                  <h2 className="text-xl font-bold mb-2">Overview</h2>
+                  <p className="text-gray-200 leading-relaxed">{movie.overview}</p>
+                </div>
+              </ScrollReveal>
 
               {/* Crew Information */}
-              <div className="space-y-4 mb-6">
-                {directors.length > 0 && (
-                  <div>
-                    <span className="font-bold">Director{directors.length > 1 ? "s" : ""}:</span>{" "}
-                    {directors.map((director, index) => (
-                      <span key={director.id}>
-                        <Link href={`/person/${director.id}`} className="text-blue-300 hover:text-blue-400">
-                          {director.name}
-                        </Link>
-                        {index < directors.length - 1 ? ", " : ""}
-                      </span>
-                    ))}
-                  </div>
-                )}
+              <ScrollReveal direction="up" delay={1.2}>
+                <div className="space-y-4 mb-6">
+                  {directors.length > 0 && (
+                    <div>
+                      <span className="font-bold">Director{directors.length > 1 ? "s" : ""}:</span>{" "}
+                      {directors.map((director, index) => (
+                        <span key={director.id}>
+                          <Link href={`/person/${director.id}`} className="text-blue-300 hover:text-blue-400">
+                            {director.name}
+                          </Link>
+                          {index < directors.length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
-                {writers.length > 0 && (
-                  <div>
-                    <span className="font-bold">Writer{writers.length > 1 ? "s" : ""}:</span>{" "}
-                    {writers.map((writer, index) => (
-                      <span key={writer.id}>
-                        <Link href={`/person/${writer.id}`} className="text-blue-300 hover:text-blue-400">
-                          {writer.name}
-                        </Link>
-                        {writer.job !== "Writer" && ` (${writer.job})`}
-                        {index < writers.length - 1 ? ", " : ""}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                  {writers.length > 0 && (
+                    <div>
+                      <span className="font-bold">Writer{writers.length > 1 ? "s" : ""}:</span>{" "}
+                      {writers.map((writer, index) => (
+                        <span key={writer.id}>
+                          <Link href={`/person/${writer.id}`} className="text-blue-300 hover:text-blue-400">
+                            {writer.name}
+                          </Link>
+                          {writer.job !== "Writer" && ` (${writer.job})`}
+                          {index < writers.length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
-                {producers.length > 0 && (
-                  <div>
-                    <span className="font-bold">Producer{producers.length > 1 ? "s" : ""}:</span>{" "}
-                    {producers.map((producer, index) => (
-                      <span key={producer.id}>
-                        <Link href={`/person/${producer.id}`} className="text-blue-300 hover:text-blue-400">
-                          {producer.name}
-                        </Link>
-                        {index < producers.length - 1 ? ", " : ""}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
+                  {producers.length > 0 && (
+                    <div>
+                      <span className="font-bold">Producer{producers.length > 1 ? "s" : ""}:</span>{" "}
+                      {producers.map((producer, index) => (
+                        <span key={producer.id}>
+                          <Link href={`/person/${producer.id}`} className="text-blue-300 hover:text-blue-400">
+                            {producer.name}
+                          </Link>
+                          {index < producers.length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </ScrollReveal>
 
               {/* Technical */}
-              <div className="space-y-4">
-                <div className="backdrop-blur-md bg-zinc-100/10 border border-zinc-100/20 rounded-lg p-6 sm:p-8">
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-semibold">Runtime</h3>
-                      <p className="text-gray-200">
-                        {hours}h {minutes}m ({movie.runtime} minutes)
-                      </p>
-                    </div>
+              <ScrollReveal direction="bounce" delay={1.4}>
+                <div className="space-y-4">
+                  <div className="backdrop-blur-md bg-zinc-100/10 border border-zinc-100/20 rounded-lg p-6 sm:p-8">
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-semibold">Runtime</h3>
+                        <p className="text-gray-200">
+                          {hours}h {minutes}m ({movie.runtime} minutes)
+                        </p>
+                      </div>
 
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-semibold">Audio</h3>
-                      <p className="text-gray-200">{movie.spoken_languages.map((lang) => lang.english_name).join(", ")}</p>
-                    </div>
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-semibold">Audio</h3>
+                        <p className="text-gray-200">{movie.spoken_languages.map((lang) => lang.english_name).join(", ")}</p>
+                      </div>
 
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-semibold">Status</h3>
-                      <p className="text-gray-200">{movie.status}</p>
-                    </div>
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-semibold">Status</h3>
+                        <p className="text-gray-200">{movie.status}</p>
+                      </div>
 
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-semibold">Production Companies</h3>
-                      <p className="text-gray-200">{movie.production_companies.map((company) => company.name).join(", ")}</p>
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-semibold">Production Companies</h3>
+                        <p className="text-gray-200">{movie.production_companies.map((company) => company.name).join(", ")}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </ScrollReveal>
 
               {movie.belongs_to_collection && (
-                <div className="mt-8">
-                  <h2 className="text-2xl font-semibold mb-4">Collection</h2>
-                  <CollectionLink collection={movie.belongs_to_collection} />
-                </div>
+                <ScrollReveal direction="up" delay={1.6}>
+                  <div className="mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">Collection</h2>
+                    <CollectionLink collection={movie.belongs_to_collection} />
+                  </div>
+                </ScrollReveal>
               )}
             </div>
-          </div>
+          </ScrollReveal>
         </div>
 
         {/* Cast Section */}
-        <div className="mx-auto mt-12">
+        <ScrollReveal direction="up" className="mx-auto mt-12">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl md:text-2xl font-bold">Movie Cast</h2>
             <Link href={`/movie/${params.slug}/cast`} className="text-blue-600 hover:text-blue-800 font-medium">
@@ -311,7 +337,7 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
             </Link>
           </div>
           <div className="backdrop-blur-md bg-zinc-100/10 border border-zinc-100/20 rounded-lg p-6">
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+            <StaggeredGrid className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4" delay={0.05}>
               {movie?.credits?.cast?.slice(0, 15).map((member) => (
                 <div key={member.id} className="group relative overflow-hidden rounded-lg">
                   <Link href={`/person/${member.id}`} className="block">
@@ -331,16 +357,17 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                   </div>
                 </div>
               ))}
-            </div>
+            </StaggeredGrid>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Media Section */}
         {movie.images && (movie.images.backdrops || movie.images.posters) && (
-          <div className="mt-12 pb-12">
+          <ScrollReveal direction="up" className="mt-12 pb-12">
             <Tabs defaultValue="backdrops" className="w-full">
-              <div className="flex justify-center">
-                <TabsList className="mb-24 bg-transparent p-3 flex flex-wrap justify-center gap-2 sm:mb-16">
+              <FadeInSection delay={0.2}>
+                <div className="flex justify-center">
+                  <TabsList className="mb-24 bg-transparent p-3 flex flex-wrap justify-center gap-2 sm:mb-16">
                   {movie.images.backdrops && (
                     <TabsTrigger value="backdrops" className="data-[state=active]:bg-zinc-100/10 data-[state=active]:text-white transition-all duration-300 ease-in-out text-sm md:text-base lg:text-lg px-4 py-2 rounded-lg">
                       Backdrops ({movie.images.backdrops.length})
@@ -376,12 +403,13 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                       Featurettes ({movie.featurettes?.length})
                     </TabsTrigger>
                   )}
-                </TabsList>
-              </div>
+                  </TabsList>
+                </div>
+              </FadeInSection>
 
               {movie.images.backdrops && (
                 <TabsContent value="backdrops">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-2 gap-4">
+                  <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-2 gap-4" delay={0.1}>
                     {movie.images.backdrops.slice(0, visibleBackdrops).map((backdrop, index) => (
                       <Card key={index}>
                         <CardContent className="p-0">
@@ -391,7 +419,7 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                         </CardContent>
                       </Card>
                     ))}
-                  </div>
+                  </StaggeredGrid>
                   {visibleBackdrops < movie.images.backdrops.length && (
                     <div className="mt-6 text-center">
                       <Button onClick={loadMoreBackdrops} variant="outline" className="min-w-[200px]">
@@ -407,7 +435,7 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
 
               {movie.images.posters && (
                 <TabsContent value="posters">
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  <StaggeredGrid className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" delay={0.08}>
                     {movie.images.posters.slice(0, visiblePosters).map((poster, index) => (
                       <Card key={index}>
                         <CardContent className="p-0">
@@ -417,7 +445,7 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                         </CardContent>
                       </Card>
                     ))}
-                  </div>
+                  </StaggeredGrid>
                   {visiblePosters < movie.images.posters.length && (
                     <div className="mt-6 text-center">
                       <Button onClick={loadMorePosters} variant="outline" className="min-w-[200px]">
@@ -536,7 +564,7 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
                 </TabsContent>
               )}
             </Tabs>
-          </div>
+          </ScrollReveal>
         )}
       </div>
 
@@ -549,14 +577,14 @@ export default function MoviePage({ params }: { params: { slug: string } }) {
         </div>
       )}
 
-      <div className="container mt-12">
+      <ScrollReveal direction="up" className="container mt-12">
         <h2 className="text-2xl font-bold mb-6">Recommendation</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 lg:gap-8 mb-8">
+        <StaggeredGrid className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 lg:gap-8 mb-8" delay={0.1}>
           {movie.recommendations?.results?.map((recommendation) => (
             <RecommendationCard key={recommendation.id} movie={recommendation} media_type={"movie"} showText={false} />
           ))}
-        </div>
-      </div>
+        </StaggeredGrid>
+      </ScrollReveal>
 
       {selectedVideo && (
         <Dialog open onOpenChange={closeDialog}>

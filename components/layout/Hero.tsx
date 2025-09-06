@@ -8,6 +8,8 @@ import Link from "next/link";
 import { type CarouselApi } from "@/components/ui/carousel";
 import { DotButton, useDotButton } from "@/components/ui/EmblaCarouselDotButton";
 import { CircularRating } from "../CircularRating";
+import { motion } from "framer-motion";
+import { useParallax } from "@/hooks/useScrollAnimation";
 
 interface FeaturedItem {
   id: number;
@@ -23,6 +25,7 @@ interface FeaturedItem {
 export function Hero() {
   const [featured, setFeatured] = useState<FeaturedItem[]>([]);
   const [api, setApi] = React.useState<CarouselApi>();
+  const { ref: parallaxRef, y: parallaxY } = useParallax(30);
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -62,19 +65,51 @@ export function Hero() {
           <CarouselContent>
             {featured.map((item) => (
               <CarouselItem key={item.id} className="pl-0">
-                <div className="relative">
+                <div className="relative" ref={parallaxRef}>
                   <Link href={`movie/${item.id}`}>
-                    <div className="relative h-[500px] w-full">
-                      <Image fill src={`https://image.tmdb.org/t/p/original${item.backdrop_path}`} alt={item.title} className="object-cover" priority />
+                    <div className="relative h-[500px] w-full overflow-hidden">
+                      <motion.div 
+                        style={{ y: parallaxY }}
+                        className="absolute inset-0"
+                      >
+                        <Image fill src={`https://image.tmdb.org/t/p/original${item.backdrop_path}`} alt={item.title} className="object-cover scale-110" priority />
+                      </motion.div>
                       <div className="absolute inset-0 bg-gradient-to-t from-[#191A39] from-0% to-transparent to-60% px-5">
                         <div className="container mx-auto h-full relative">
-                          <div className="flex flex-col justify-end h-full p-6 max-w-2xl pb-20">
-                            <h2 className="text-4xl font-bold text-white mb-4">
+                          <motion.div 
+                            className="flex flex-col justify-end h-full p-6 max-w-2xl pb-20"
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ 
+                              duration: 1, 
+                              ease: "easeOut",
+                              delay: 0.3
+                            }}
+                          >
+                            <motion.h2 
+                              className="text-4xl font-bold text-white mb-4"
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.8, delay: 0.5 }}
+                            >
                               {item.title || item.name} ({new Date(item.release_date).getFullYear()})
-                            </h2>
-                            <p className="text-gray-200 text-lg mb-4 line-clamp-3">{item.overview}</p>
-                            <CircularRating rating={item.vote_average || 0} size={48} />
-                          </div>
+                            </motion.h2>
+                            <motion.p 
+                              className="text-gray-200 text-lg mb-4 line-clamp-3"
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.8, delay: 0.7 }}
+                            >
+                              {item.overview}
+                            </motion.p>
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.6, delay: 0.9 }}
+                            >
+                              <CircularRating rating={item.vote_average || 0} size={48} />
+                            </motion.div>
+                          </motion.div>
                         </div>
                       </div>
                     </div>

@@ -48,6 +48,7 @@ export function SearchBar() {
     performSearch();
   }, [debouncedSearch]);
 
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();

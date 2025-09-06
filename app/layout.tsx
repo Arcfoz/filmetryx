@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Red_Hat_Display } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import { NextAuthProvider } from "@/providers/NextAuthProvider";
 import Script from "next/script";
+
+const redHatDisplay = Red_Hat_Display({
+  subsets: ['latin'],
+  variable: '--font-red-hat-display',
+  display: 'swap',
+});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,8 +40,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
-        <Script async src="https://umami-arcfoz.vercel.app/script.js" data-website-id="14673157-be51-4ca8-ab54-eb92d8252d1b" />
+      <body className={`${geistSans.variable} ${geistMono.variable} ${redHatDisplay.variable} antialiased `}>
+        <Script 
+          src="https://umami-arcfoz.vercel.app/script.js" 
+          data-website-id="14673157-be51-4ca8-ab54-eb92d8252d1b"
+          strategy="afterInteractive"
+        />
         <NextAuthProvider>
           <Navbar />
           <main>{children}</main>

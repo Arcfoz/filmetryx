@@ -135,7 +135,9 @@ export async function searchMedia(searchTerm: string) {
 
 const fetchMovies = async (endpoint: string, page: number = 1) => {
   try {
-    const response = await fetch(`${BASE_URL}/${endpoint}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${page}`);
+    const response = await fetch(`${BASE_URL}/${endpoint}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${page}`, {
+      next: { revalidate: 300 } // Cache for 5 minutes
+    });
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -208,6 +210,60 @@ export async function fetchTvPopular(page: number = 1) {
 
 export async function fetchTvTopRated(page: number = 1) {
   return fetchMovies("tv/top_rated", page);
+}
+
+// Enhanced pagination functions for load more functionality
+export type MovieGridType = "movie_popular" | "movie_top_rated" | "tv_popular" | "tv_top_rated";
+
+export async function fetchMoviesByType(type: MovieGridType, page: number): Promise<Movies[]> {
+  const endpointMap = {
+    movie_popular: "movie/popular",
+    movie_top_rated: "movie/top_rated", 
+    tv_popular: "tv/popular",
+    tv_top_rated: "tv/top_rated"
+  };
+  
+  const endpoint = endpointMap[type];
+  return fetchMovies(endpoint, page);
+}
+
+// Legacy functions maintained for compatibility
+export async function fetchPopularMoviesPage(page: number) {
+  return fetchMovies("movie/popular", page);
+}
+
+export async function fetchTopRatedMoviesPage(page: number) {
+  return fetchMovies("movie/top_rated", page);
+}
+
+export async function fetchPopularTvPage(page: number) {
+  return fetchMovies("tv/popular", page);
+}
+
+export async function fetchTopRatedTvPage(page: number) {
+  return fetchMovies("tv/top_rated", page);
+}
+
+// Parallel homepage data fetching
+export async function fetchHomepageData() {
+  try {
+    const [popularMovies, topRatedMovies, popularTv, topRatedTv] = await Promise.all([
+      fetchPopular(1),
+      fetchTopRated(1), 
+      fetchTvPopular(1),
+      fetchTvTopRated(1)
+    ]);
+
+    return {
+      popularMovies,
+      topRatedMovies,
+      popularTv,
+      topRatedTv
+    };
+  } catch (error) {
+    console.error("Error fetching homepage data:", error);
+    throw error;
+  }
 }
 
 export async function fetchFilm(id: string | number, media_type: string) {

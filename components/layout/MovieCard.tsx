@@ -1,7 +1,10 @@
+"use client";
+
 import React, { useCallback, useState } from "react";
 import Link from "next/link";
 import { Movies } from "@/types/movie";
 import { CircularRating } from "../CircularRating";
+import { Film, Monitor } from "lucide-react";
 
 interface MovieCardProps {
   movie: Movies;
@@ -46,9 +49,20 @@ export function MovieCard({ movie, media_type, children, showText }: MovieCardPr
             <div
               className="relative w-full pb-[150%] overflow-hidden rounded-xl bg-mediaCard-hoverBackground bg-cover bg-center transition-[border-radius] duration-300 group-hover:rounded-lg"
               style={{
-                backgroundImage: movie.poster_path ? `url(https://image.tmdb.org/t/p/w500${movie.poster_path})` : undefined,
+                backgroundImage: movie.poster_path ? `url(https://image.tmdb.org/t/p/original${movie.poster_path})` : undefined,
               }}
             >
+              {/* Media type icon badge */}
+              <div className="absolute top-2 left-2 z-10 opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="flex items-center justify-center w-7 h-7 rounded-full bg-black/70 backdrop-blur-sm transition-all duration-300 group-hover:bg-black/80 group-hover:scale-105 shadow-lg">
+                  {(media_type === "tv" || (!media_type && movie.first_air_date)) ? (
+                    <Monitor className="w-3.5 h-3.5 text-white drop-shadow-sm" />
+                  ) : (
+                    <Film className="w-3.5 h-3.5 text-white drop-shadow-sm" />
+                  )}
+                </div>
+              </div>
+              
               <div className="absolute bottom-2 right-2 z-10">
                 <CircularRating rating={movie.vote_average || 0} />
               </div>
@@ -58,14 +72,29 @@ export function MovieCard({ movie, media_type, children, showText }: MovieCardPr
                 <h1 className="mt-2 line-clamp-2 text-ellipsis break-words font-bold text-white">
                   <span>{movie.title || movie.name}</span>
                 </h1>
-                <div className="mt-1 text-xs text-gray-400">
-                  {media_type || "movie"} •{" "}
-                  {movie.release_date &&
-                    new Date(movie.release_date ?? movie.first_air_date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                <div className="mt-1 flex items-center gap-2 text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                  <div className="flex items-center gap-1">
+                    <div className="transition-transform duration-300 group-hover:scale-110">
+                      {(media_type === "tv" || (!media_type && movie.first_air_date)) ? (
+                        <Monitor className="w-3 h-3" />
+                      ) : (
+                        <Film className="w-3 h-3" />
+                      )}
+                    </div>
+                    <span className="capitalize font-medium">{media_type || "movie"}</span>
+                  </div>
+                  {(movie.release_date || movie.first_air_date) && (
+                    <>
+                      <span className="opacity-60">•</span>
+                      <span className="font-medium">
+                        {new Date(movie.release_date || movie.first_air_date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </>
+                  )}
                 </div>
               </>
             )}

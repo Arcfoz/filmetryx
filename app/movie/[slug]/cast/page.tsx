@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { ArrowLeft, Search } from "lucide-react";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { StaggeredGrid, FadeInSection } from "@/components/ui/AnimatedSection";
 
 interface CastMember {
   id: number;
@@ -58,26 +60,34 @@ export default function MovieCastPage({ params }: { params: { slug: string } }) 
     <div className="min-h-screen">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <Link href={`/movie/${params.slug}`} className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Show
-          </Link>
-          <h1 className="text-3xl font-bold mb-2">
-            {showInfo?.original_title} ({releaseYear})
-          </h1>
+        <ScrollReveal direction="fade" className="mb-8">
+          <ScrollReveal direction="left" delay={0.2}>
+            <Link href={`/movie/${params.slug}`} className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Show
+            </Link>
+          </ScrollReveal>
+          <ScrollReveal direction="up" delay={0.4}>
+            <h1 className="text-3xl font-bold mb-2">
+              {showInfo?.original_title} ({releaseYear})
+            </h1>
+          </ScrollReveal>
 
           {/* Search Box */}
-          <div className="relative max-w-md mt-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <Input type="text" placeholder="Search cast by name or character..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-full" />
-          </div>
+          <ScrollReveal direction="scale" delay={0.6}>
+            <div className="relative max-w-md mt-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input type="text" placeholder="Search cast by name or character..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-full" />
+            </div>
+          </ScrollReveal>
 
-          <p className="text-gray-600 mt-4">{filteredCast.length} Cast Members</p>
-        </div>
+          <ScrollReveal direction="fade" delay={0.8}>
+            <p className="text-gray-600 mt-4">{filteredCast.length} Cast Members</p>
+          </ScrollReveal>
+        </ScrollReveal>
 
         {/* Cast Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <StaggeredGrid className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4" delay={0.1}>
           {filteredCast.map((member) => (
             <Card key={member.id}>
               <CardContent className="p-0">
@@ -99,13 +109,15 @@ export default function MovieCastPage({ params }: { params: { slug: string } }) 
               </CardContent>
             </Card>
           ))}
-        </div>
+        </StaggeredGrid>
 
         {/* No Results Message */}
         {filteredCast.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600">No cast members found matching your search.</p>
-          </div>
+          <FadeInSection>
+            <div className="text-center py-12">
+              <p className="text-gray-600">No cast members found matching your search.</p>
+            </div>
+          </FadeInSection>
         )}
       </div>
     </div>

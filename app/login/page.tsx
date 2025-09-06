@@ -92,33 +92,60 @@ export default function LoginContent() {
     }
   };
 
+
   if (status === "loading" || session) {
     return null;
   }
 
   return (
-    <Card className="w-full max-w-[400px]">
-      <CardHeader>
-        <CardTitle className="text-2xl text-center">Login with TMDB</CardTitle>
+    <Card className="w-full backdrop-blur-sm bg-card/80 border-border/50 shadow-2xl">
+      <CardHeader className="text-center pb-4 px-6 sm:px-8 pt-6 sm:pt-8">
+        <CardTitle className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-red-hat-display)] text-foreground mb-2">
+          Welcome Back
+        </CardTitle>
+        <p className="text-muted-foreground text-sm sm:text-base px-2">
+          Sign in to access your personalized movie experience
+        </p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6 px-6 sm:px-8 pb-6 sm:pb-8">
+        {/* Demo Account Info */}
+        <div className="text-center text-xs text-muted-foreground/70 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+          <p className="font-medium text-blue-400 mb-2">Demo Account Available</p>
+          <p>Username: <span className="font-mono text-foreground">filmetryx</span></p>
+          <p>Password: <span className="font-mono text-foreground">1234</span></p>
+        </div>
+
+        <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-accent/20 border border-border/30">
+            <div className="w-5 h-5 bg-[#01B4E4] rounded flex items-center justify-center">
+              <span className="text-xs font-bold text-white">T</span>
+            </div>
+            <span className="text-sm font-medium text-foreground">TMDB Account</span>
+          </div>
+        </div>
+
         <Button
           onClick={handleLogin}
-          className="w-full"
+          className="w-full h-11 sm:h-12 text-sm sm:text-base font-medium bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground shadow-lg transition-all duration-200 hover:shadow-xl disabled:opacity-50"
           disabled={isLoading || isAuthenticating}
         >
           {isLoading || isAuthenticating ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {isAuthenticating ? "Authenticating..." : "Please wait..."}
+              <Loader2 className="mr-2 sm:mr-3 h-4 sm:h-5 w-4 sm:w-5 animate-spin" />
+              <span>{isAuthenticating ? "Authenticating..." : "Preparing login..."}</span>
             </>
           ) : (
-            "Authenticate with TMDB"
+            <>
+              <span>Continue with TMDB</span>
+            </>
           )}
         </Button>
-        <p className="text-sm text-muted-foreground text-center">
-          You will be redirected to TMDB to complete the login process
-        </p>
+
+        <div className="text-center">
+          <p className="text-xs sm:text-sm text-muted-foreground/80 leading-relaxed">
+            You'll be securely redirected to The Movie Database
+          </p>
+        </div>
       </CardContent>
     </Card>
   );

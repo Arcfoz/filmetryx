@@ -68,6 +68,33 @@ const handler = NextAuth({
         }
       },
     }),
+    CredentialsProvider({
+      id: "demo",
+      name: "Demo",
+      credentials: {
+        username: { type: "text" },
+        password: { type: "password" },
+      },
+      async authorize(credentials): Promise<TMDBUser | null> {
+        if (!credentials?.username || !credentials?.password) {
+          return null;
+        }
+
+        // Check demo credentials
+        if (credentials.username === "filmetryx" && credentials.password === "1234") {
+          return {
+            id: "demo-user",
+            name: "Demo User",
+            email: "demo@filmetryx.com",
+            image: null,
+            account_id: 999999,
+            session_id: "demo-session",
+          };
+        }
+
+        return null;
+      },
+    }),
   ],
   callbacks: {
     async jwt({ token, user }) {
