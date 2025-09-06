@@ -29,22 +29,6 @@ const containerVariants: Variants = {
   }
 };
 
-const movieCardVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-    scale: 0.95
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.4,
-      ease: "easeOut"
-    }
-  }
-};
 
 const skeletonVariants: Variants = {
   hidden: {
@@ -172,7 +156,6 @@ export function MovieGridWithLoadMore({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [newlyLoadedIds, setNewlyLoadedIds] = useState<Set<number>>(new Set());
   const requestInProgress = useRef(false);
   const titleRef = useRef<HTMLDivElement>(null);
   const isTitleInView = useInView(titleRef, { once: true, margin: "-100px 0px" });
@@ -196,14 +179,6 @@ export function MovieGridWithLoadMore({
           const existingIds = new Set(prev.map(movie => movie.id));
           const filteredNewMovies = newMovies.filter(movie => !existingIds.has(movie.id));
           
-          // Track newly loaded movie IDs for animation
-          const newIds = new Set(filteredNewMovies.map(movie => movie.id));
-          setNewlyLoadedIds(newIds);
-          
-          // Clear newly loaded IDs after animation completes
-          setTimeout(() => {
-            setNewlyLoadedIds(new Set());
-          }, 1000);
           
           return [...prev, ...filteredNewMovies];
         });
@@ -236,7 +211,6 @@ export function MovieGridWithLoadMore({
 
   // Simplified variants for reduced motion
   const accessibleVariants = {
-    movieCard: reduceMotion ? {} : movieCardVariants,
     skeleton: reduceMotion ? {} : skeletonVariants,
     container: reduceMotion ? {} : containerVariants,
     button: reduceMotion ? {} : buttonVariants,
@@ -277,15 +251,9 @@ export function MovieGridWithLoadMore({
       >
         {/* All movies including loaded ones */}
         {allMovies.map((movie) => (
-          <motion.div
-            key={movie.id}
-            variants={newlyLoadedIds.has(movie.id) && !reduceMotion ? accessibleVariants.movieCard : {}}
-            initial={newlyLoadedIds.has(movie.id) && !reduceMotion ? "hidden" : false}
-            animate={newlyLoadedIds.has(movie.id) && !reduceMotion ? "show" : {}}
-            layout={!reduceMotion}
-          >
+          <div key={movie.id}>
             <MovieCard movie={movie} media_type={media_type} showText={true}/>
-          </motion.div>
+          </div>
         ))}
         
         {/* Loading skeleton for next batch */}
